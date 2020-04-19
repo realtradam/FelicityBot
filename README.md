@@ -1,5 +1,6 @@
 # About
 @Felicity is a bot I made :D
+Feel free to use this code as you will, I would appreciate being credited if you do.
 It currently has the following features and with more possibly coming soon:
 * !roll <number> to roll a dice
 * !flip to flip a coin, it reacts the result
