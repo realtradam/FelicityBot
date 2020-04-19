@@ -1,3 +1,5 @@
+#Code written by Tradam --> https://github.com/realtradam
+
 import os
 
 import discord
