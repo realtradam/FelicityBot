@@ -12,12 +12,8 @@ from dotenv import load_dotenv #Substitues the API key variable
 storedStats = {}
 #{userid : {hp : num, damage : num, death: num}, etc.}
 
-#The following are usef for emoji conversion, changes set depending on which server
-#	is sending the message.
-storedEmoji1 = {"<normal-emoji-on-server>": "<custom-animated-emoji>"}
-#The first emoji set is set for a specific server of your choice
-#You can set emojis on your server to be converted into emojis
-#	of your choice(ones that are animated for example)
+#This is the generic conversion that works on any server.
+#Uses generic messages
 				
 storedEmoji2 = {"!cheer": "<a:cheated:690837457440210945>", 
 				"!stress": "<a:stressed:690851643863990302>",
@@ -30,13 +26,21 @@ storedEmoji2 = {"!cheer": "<a:cheated:690837457440210945>",
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')# You need to set up a .env file which holds your token
+EMOJI_SET = os.getenv('EMOJI_SET')#get your custom made emoji set specifically for a server
+IP = os.getenv('IP')
+PORT = int(os.getenv('PORT'))
+UNIQUE_SERVER = os.getenv('UNIQUE_SERVER')
+MC_FOLDER = os.getenv('MC_FOLDER')
+MC_RUNNABLE_SCRIPT = os.getenv('MC_RUNNABLE_SCRIPT')
+PID_TXT = os.getenv('PID_TXT')
+BOT_ID = os.getenv('BOT_ID')
 
 client = discord.Client()
 
 #Sets up the bot, its variables, etc. when the bot is initially run
 @client.event
 async def on_ready():
-	global storedStats
+	global storedStats, storedEmoji1
 	print('{} is connected to the following servers:'.format(client.user))
 	for guild in client.guilds:
 		print('\t- {} (id: {})'.format(guild.name,guild.id))
@@ -46,6 +50,12 @@ async def on_ready():
 	json1_file = open('attacks.json')
 	json1_str = json1_file.read()
 	storedStats = json.loads(json1_str)
+	
+	#This sets up another emoji set that can be used on a specific server that
+	#	has specific replacable emojis set up
+	json_file = open(EMOJI_SET)
+	json_str = json_file.read()
+	storedEmoji1 = json.loads(json_str)
 	
 	print("save data loaded")
 	print('Bot is live!')
@@ -63,7 +73,7 @@ async def on_message(message):
 	isVerified = "false"
 	isAdmin = "false"
 	#Address to server
-	mcServer = MinecraftServer("<server.ip>", <port>)
+	mcServer = MinecraftServer(IP, PORT)
 	
 	#If the bot sent the message, ignore
 	if message.author == client.user:
@@ -77,7 +87,7 @@ async def on_message(message):
 			isAdmin = "true"
 	
 	#Depending on which server the message was in: what emoji set should be used
-	if str(message.guild.id) == str("<server-id>"):
+	if str(message.guild.id) == str(UNIQUE_SERVER):
 		animatedEmoji = storedEmoji1
 	else: #All other servers use the generic set
 		animatedEmoji = storedEmoji2
@@ -107,7 +117,7 @@ async def on_message(message):
 				status = mcServer.status()
 				await message.channel.send("The server is already Online!")
 			except ConnectionError:
-				os.system('(cd <path/to/folder>; ./<runnable-script>)')#Run a script that will correctly start your server
+				os.system('(cd {}; ./{})'.format(MC_FOLDER, MC_RUNNABLE_SCRIPT))#Run a script that will correctly start your server
 				await message.channel.send("Server is Offline. Bootup has started, it usually takes up to about 2 minutes to finish booting and become visible online so please be patient")
 				return
 			return
@@ -123,7 +133,7 @@ async def on_message(message):
 				if players > 0:
 					await message.channel.send("The server still has players on it! The server must be empty before shutdown can happen")
 				else:
-					with open ("<path/to/PID.txt>", "r") as myfile: #path to text file that stores the PID of the minecraft server, so that the server can be told to shut down
+					with open ("{}".format(PID_TXT), "r") as myfile: #path to text file that stores the PID of the minecraft server, so that the server can be told to shut down
 						pid = myfile.read()
 					os.system("kill -15 {}".format(pid))
 					await message.channel.send("Server has shut down")
@@ -162,7 +172,7 @@ async def on_message(message):
 				temp = random.randint(1,29)
 				if str(message.author.id) not in storedStats:
 					storedStats[str(message.author.id)] = {'hp' : 50, 'damage' : 0, 'deaths' : 0}
-				if str(temp2[1]) == "<id-of-this-bot>":
+				if str(temp2[1]) == BOT_ID:
 					await message.channel.send('<a:angryAwooGlitch:691087516819914772>')
 					return
 				elif str(temp2[1]) not in storedStats:
