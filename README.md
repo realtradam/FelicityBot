@@ -10,5 +10,5 @@ It currently has the following features and with more possibly coming soon:
 * !list to show a list of animated emojis you can evoke from @Felicity use any of these emojis in a message and @Felicity will automatically replace them for you
 * !react followed by one of the emojis listed in !list to have @Felicity react for you to the message above you(e.g !react !cheer)
 * !mc to view minecraft server info(if the server is online, and what users are connected)
-* !mc start to start the server. It will check to see if the server is already online so it will not start in that case
-* !mc stop to halt the server. It will check if users are connected and will not shutdown until no one is connected
+* !mcstart to start the server. It will check to see if the server is already online so it will not start in that case
+* !mcstop to halt the server. It will check if users are connected and will not shutdown until no one is connected
