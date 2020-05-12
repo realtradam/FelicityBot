@@ -238,20 +238,17 @@ async def on_message(message):
 	#If it does then it will replace it, and resend the message on behalf of the user
 	#	while also deleting the original users message
 	#To identify the original user who sent the message, it also @'s them
-	#To prevent the bot from unintentionally hijacking messages on others servers, set it
-	#	to only work on your unique server
-	if str(message.guild.id) == str(UNIQUE_SERVER):
-		modifiedMessage = message.content
-		switchFlag = 0 #A flag that determines of a match was made, and if the users message should be replaced
-		for key in animatedEmoji:
-			matchCheck = re.search(re.escape(key), message.content, flags=re.I)#Check if the message has a replacable emoji
-			if (str(matchCheck) != "None"):
-				modifiedMessage = re.sub(re.escape(key), animatedEmoji[key], modifiedMessage, flags=re.I)
-				switchFlag = 1#sets a flag that a match was made, and should replace the message
-		if  switchFlag == 1:#ONLY replace if a match was found
-			await message.channel.send('<@{}>:'.format(message.author.id))
-			await message.delete()
-			await message.channel.send(modifiedMessage)
+	modifiedMessage = message.content
+	switchFlag = 0 #A flag that determines of a match was made, and if the users message should be replaced
+	for key in animatedEmoji:
+		matchCheck = re.search(re.escape(key), message.content, flags=re.I)#Check if the message has a replacable emoji
+		if (str(matchCheck) != "None"):
+			modifiedMessage = re.sub(re.escape(key), animatedEmoji[key], modifiedMessage, flags=re.I)
+			switchFlag = 1#sets a flag that a match was made, and should replace the message
+	if  switchFlag == 1:#ONLY replace if a match was found
+		await message.channel.send('<@{}>:'.format(message.author.id))
+		await message.delete()
+		await message.channel.send(modifiedMessage)
 			
 
 
